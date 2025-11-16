@@ -1,0 +1,1 @@
+Se agrega un modedelo ER que muestra como es la estructura de las tablas de mi proyecto personal (Una pagina web para la banda de metal de mi cuñado) su funcion es entregar informacion de la banda, mostrar fotos, videos y un sistema de mensajeria para poder contactar a la banda.
