@@ -1,0 +1,141 @@
+CREATE DATABASE banda_metal_db;
+
+USE banda_metal_db;
+
+-- Requerimientos DDL
+CREATE TABLE banda (
+    id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    nombre VARCHAR(100) NOT NULL,
+    descripcion TEXT,
+    anio_formacion INT
+);
+
+CREATE TABLE miembros (
+    id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    nombre VARCHAR(100),
+    instrumento VARCHAR(100),
+    fecha_ingreso DATE,
+    banda_id INT,
+    FOREIGN KEY (banda_id) REFERENCES banda(id)
+);
+
+
+CREATE TABLE fotos (
+    id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    url VARCHAR(255),
+    descripcion VARCHAR(255),
+    banda_id INT,
+    FOREIGN KEY (banda_id) REFERENCES banda(id)
+);
+
+CREATE TABLE videos (
+    id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    titulo VARCHAR(255),
+    url VARCHAR(255),
+    banda_id INT,
+    FOREIGN KEY (banda_id) REFERENCES banda(id)
+);
+
+CREATE TABLE mensajes_contacto (
+    id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    nombre VARCHAR(100) NOT NULL,
+    email VARCHAR(150) NOT NULL,
+    asunto VARCHAR(200),
+    mensaje TEXT NOT NULL,
+    fecha DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    leido TINYINT(1) NOT NULL DEFAULT 0
+);
+
+-- Requerimientos DML*
+
+-- Insert Banda
+INSERT INTO banda (nombre, descripcion, anio_formacion)
+VALUES (
+    'Kolosal Remaint', 
+    'Banda de metal chilena con influencias thrash y groove.', 
+    2022
+);
+
+INSERT INTO banda (nombre, descripcion, anio_formacion)
+VALUES ('Metal Fury', 'Banda de metal chilena con estilo heavy y thrash.', 2015);
+
+-- Insert Banda Miembros
+INSERT INTO miembros (nombre, instrumento, fecha_ingreso, banda_id)
+VALUES
+('Martin Castro', 'Voz / Guitarra', '2022-03-10', 1),
+('Carlos Soto', 'Batería', '2022-05-22', 1),
+('Javier Torres', 'Bajo', '2022-08-15', 1);
+
+INSERT INTO miembros (nombre, instrumento, fecha_ingreso, banda_id)
+VALUES 
+('Brian Pradenas', 'Voz', '2016-01-10', 2),
+('Carlos Herrera', 'Guitarra', '2017-05-21', 2),
+('Matías Soto', 'Batería', '2018-09-12', 2);
+
+-- Insert Mensaje
+
+INSERT INTO mensajes_contacto (nombre, email, asunto, mensaje)
+VALUES (
+    'Andrea López',
+    'andrea.lopez@gmail.com',
+    'Contratación de la banda',
+    'Hola, quisiera saber disponibilidad para un evento en diciembre.'
+);
+
+-- Actualizar descripción de la banda
+UPDATE banda
+SET descripcion = 'Banda chilena de metal melódico con influencias modernas.'
+WHERE id = 2;
+
+-- Seleccionar banda
+Select *
+FROM banda;
+
+-- Obtener solo los mensajes NO leídos
+SELECT *
+FROM mensajes_contacto
+WHERE leido = 0
+ORDER BY fecha DESC;
+
+-- Eliminar un miembro de una banda en especifico
+DELETE FROM miembros
+WHERE nombre = 'Carlos Herrera'
+  AND banda_id = 2;
+
+-- Cambiar instrumento de un miembro
+UPDATE miembros
+SET instrumento = 'Guitarra Líder'
+WHERE id = 1;
+
+-- Obtener todos los miembros
+SELECT * FROM miembros;
+
+-- Buscar miembros por instrumento
+SELECT nombre, instrumento
+FROM miembros
+WHERE instrumento = 'Batería';
+
+-- Miembros + nombre de la banda
+SELECT m.nombre, m.instrumento, b.nombre AS banda
+FROM miembros m
+JOIN banda b ON m.banda_id = b.id;
+
+-- Miembros ordenados por fecha de ingreso
+SELECT *
+FROM miembros
+ORDER BY fecha_ingreso DESC;
+
+-- Mostrar bandas incluso si NO tienen fotos
+SELECT b.nombre, f.url
+FROM banda b
+LEFT JOIN fotos f ON f.banda_id = b.id;
+
+-- Actualizar el correo de un miembro
+UPDATE miembros
+SET email = 'gatosGanadores.correo@example.com'
+WHERE id = 3;
+
+-- borrar todos los miembros de Metal Fury
+DELETE m FROM miembros m
+JOIN banda b ON m.banda_id = b.id
+WHERE b.nombre = 'Metal Fury';
